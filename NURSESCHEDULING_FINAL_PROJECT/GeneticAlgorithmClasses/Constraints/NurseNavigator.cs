@@ -9,7 +9,7 @@ namespace NURSESCHEDULING_FINAL_PROJECT
     class NurseNavigator
     {
      
-        //skladowe dla pierwszej metody
+        //skladowe dla pierwszej metody - pobieranie z chromosoma
         static sbyte currentWeek = 0;
         static sbyte currentDay = 0;
         static sbyte currentShift = 0;
@@ -29,7 +29,7 @@ namespace NURSESCHEDULING_FINAL_PROJECT
         public static sbyte CurrentIndexOfNurseOnShift { get => currentIndexOfNurseOnShift; set => currentIndexOfNurseOnShift = value; }
         public static sbyte IndexOfNextNurseFromPool { get => indexOfNextNurseFromPool; set => indexOfNextNurseFromPool = value; }
 
-        //skladowe dla drugiej metody
+        //skladowe dla drugiej metody - pobieranie z pool
         static sbyte indexOfNextNurseFromPool = -1;
 
         /// <summary>
@@ -92,7 +92,7 @@ namespace NURSESCHEDULING_FINAL_PROJECT
         public static NurseClass getNextNurseFromNursePool(PoolOfNurses obPoolOfNurses)
         {
             indexOfNextNurseFromPool++;
-            if (indexOfNextNurseFromPool == PoolOfNurses.sizeOfPool) return null;
+            if (indexOfNextNurseFromPool == PoolOfNurses.SizeOfPool) return null;
             return obPoolOfNurses.getNurseFromPoolFromTheIndex(indexOfNextNurseFromPool);
         }
 

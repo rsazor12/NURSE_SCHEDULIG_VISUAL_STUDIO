@@ -208,11 +208,11 @@ namespace NURSESCHEDULING_FINAL_PROJECT
 
 
                 //5 KONIEC ALGORYTMU GDY wskaźnik spełnienia HC w najlepszym chromosomie wynosi 10 i penalty mniejsze od założonego , oraz osiągnięto minimalną ilość generacji
-                if ( (listOfParentChromosomes.OrderByDescending(o => o.HowManyHCDoneCounter).ToList()[0].HowManyHCDoneCounter == 10) && counterOfGenerations > minimumNumberOfGenerations ) //jezeli HC spełnione i osiągnięto założoną liczbe minimalna generacji
+                if ( (listOfParentChromosomes.OrderByDescending(o => o.HowManyHCDoneCounter).ToList()[0].HowManyHCDoneCounter == 7) && counterOfGenerations > minimumNumberOfGenerations ) //jezeli HC spełnione i osiągnięto założoną liczbe minimalna generacji
                 {
                     if(listOfParentChromosomes.OrderByDescending(o => o.HowManyHCDoneCounter).ToList()[0].PenaltyOfChromosome<acceptablePenalty) // jezeli soft constraints na odpowiednim poziomie
                     {
-                        Console.WriteLine("Mamy Rozwiązanie !");
+                        Console.WriteLine("Mamy Rozwiązanie ! po : "+ counterOfGenerations + " epokach");
                         Console.Read();
 
                         return listOfParentChromosomes.OrderBy(o => o.PenaltyOfChromosome).ToList()[0]; //mamy rozwiązanie wiec zwracamy chromosom z najmniejszą karą

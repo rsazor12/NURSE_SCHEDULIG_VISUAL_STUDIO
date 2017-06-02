@@ -19,12 +19,13 @@ namespace NURSESCHEDULING_FINAL_PROJECT
 
 
 
-            GeneticAlgorithmClass obGeneticAlgorithmClass = new GeneticAlgorithmClass(6,10,20,200,1000,4);
+            GeneticAlgorithmClass obGeneticAlgorithmClass = new GeneticAlgorithmClass(6,10,20,200,100000,4);
             obChromosomeClass = obGeneticAlgorithmClass.runAlgorithm();  //uruchom lagorytm , a gdy wsytskie constraints spełnione zwróć najlepszy chromosom
 
             obChromosomeClass.writeNursesFromChromosomeFromEachShift();  //wypisz ten chromosom ktory jest wynikiem
 
              Console.WriteLine("\n\nPenalty rozwiązania wynosi \a\a\a\a\a\a" + obChromosomeClass.PenaltyOfChromosome);
+            Console.WriteLine("Poziom spełnienia HC : " + obChromosomeClass.checkHowManyHCIsDone());
 
            
 

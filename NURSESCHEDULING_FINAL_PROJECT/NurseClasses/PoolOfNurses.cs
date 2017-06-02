@@ -9,7 +9,7 @@ namespace NURSESCHEDULING_FINAL_PROJECT
     class PoolOfNurses
     {
         List<NurseClass> listOfNurses;  // dodaje pielegnirki do listy
-        public static int sizeOfPool=16;       //ta wartosc bedzie odczytywana pozniej z bazy 
+        private static int sizeOfPool = 16;       //ta wartosc bedzie odczytywana pozniej z bazy 
         public static int countOfFullTimeNurses = 14;
         public static int countOfPartTimeNurses = 2;
 
@@ -26,7 +26,7 @@ namespace NURSESCHEDULING_FINAL_PROJECT
             listOfNurses = new List<NurseClass>();
 
             //musze utworzyc Pielegniarki i dodac je do listy 
-            for(sbyte i=0;i<sizeOfPool;i++)
+            for(sbyte i=0;i<SizeOfPool;i++)
             {
                 //pierwsze iles tam to fulltime
                 if(i<countOfFullTimeNurses)
@@ -64,6 +64,7 @@ namespace NURSESCHEDULING_FINAL_PROJECT
 
         public static int CurrentNurseId { get => currentNurseId; set => currentNurseId = value; }
         public static int CurrentNurseId1 { get => currentNurseId; set => currentNurseId = value; }
+        public static int SizeOfPool { get => sizeOfPool; set => sizeOfPool = value; }
 
         public NurseClass getRandomNurseFromPool()
         {
@@ -89,7 +90,7 @@ namespace NURSESCHEDULING_FINAL_PROJECT
         public NurseClass getNurseFromPoolByOrder()
         {
             currentNurseId++;
-            if (currentNurseId == sizeOfPool )
+            if (currentNurseId == SizeOfPool )
                 currentNurseId = 0;
             return listOfNurses[currentNurseId];
         }

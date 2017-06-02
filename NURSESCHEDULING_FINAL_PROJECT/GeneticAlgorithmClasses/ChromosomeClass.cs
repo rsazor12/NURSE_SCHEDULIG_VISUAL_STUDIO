@@ -19,12 +19,14 @@ namespace NURSESCHEDULING_FINAL_PROJECT
 
         //Właściwości
         public int PenaltyOfChromosome { get => penaltyOfChromosome; }
-        public int HowManyHCDoneCounter { get => howManyHCDoneCounter; set => howManyHCDoneCounter = value; }
+        ///zwraca ile HC jest spełnionych ale najpierw wylicza tą wartosc 
+        public int HowManyHCDoneCounter { get => checkHowManyHCIsDone(); set => howManyHCDoneCounter = value; }
 
         public ChromosomeClass()
         {
             //przypisanie zdarzen obsługujących wystapienie HardConstraints
             obConstraintsClass.HCDone += HCDoneHandler;
+            obConstraintsClass.HCNotDone += HCNotDoneHandler;
             
             //bedzie wiele chromosomów wiec musze jakby zresetowac id od ktorego bd przydzielane nastepne
             NurseClass.counterOfNurseObject = 1;
@@ -343,15 +345,34 @@ namespace NURSESCHEDULING_FINAL_PROJECT
 
             while (counterOfMutationDone<howMuchMutationWillBeDone)//z kazdym obraotem zamiana zmian
             {
-                //zmiana 1
+                //najpierw losuje pierwsza zmiane1 do zamiany - odpowiednie indexy w chromosomie
                 weekOfShift1 = rnd.Next(0, 5);
                 dayOfShift1 = rnd.Next(0, 7);
                 shiftOfShift1 = rnd.Next(0, 4);
 
-                //zmiana2
-                weekOfShift2 = rnd.Next(0, 5);
-                dayOfShift2 = rnd.Next(0, 7);
-                shiftOfShift2 = rnd.Next(0, 4);
+                //zmiana2 ściśle zależy od zmiany1 b nie mozemy zamienic np zmiany night z early bo mają różną długość
+                if(shiftOfShift1>=0 && shiftOfShift1 <= 2)//jesli wylosowalismy zmiany e,d,l,
+                {
+                    if(dayOfShift1>=0 && dayOfShift1<=4)//jesli dni od pon do piatku
+                    {
+                        weekOfShift2 = rnd.Next(0, 5); //przedział week sie nie zmiania
+                        dayOfShift2 = rnd.Next(0, 5);  //przedział day to od pon do piatku
+                        shiftOfShift2 = rnd.Next(0, 3); //losuje tylko e,d,l
+                    }
+                    else //jesli dni od sooty do niedzieli
+                    {
+                        weekOfShift2 = rnd.Next(0, 5); //przedział week sie nie zmiania
+                        dayOfShift2 = rnd.Next(5, 7);  //przedział day to od soboty do niedzieli
+                        shiftOfShift2 = rnd.Next(0, 3); //losuje tylko e,d,l
+                    }
+                }
+                else //jesli wylosowalismy zmiane night to wybieramy inna zmiane night do zamiany
+                {
+                    weekOfShift2 = rnd.Next(0, 5); //przedział week sie nie zmiania
+                    dayOfShift2 = rnd.Next(0, 7);  //day jest dowolny
+                    shiftOfShift2 = 3; //zmiana musi byc night
+                }
+               
 
                 //mamy 2 zmiany wiec je teraz zamieniamy ze soba 2 w miejsce 1 i 1 w miejsce 2
                 //najpierw 1 zmiana do schowka
@@ -371,12 +392,22 @@ namespace NURSESCHEDULING_FINAL_PROJECT
         {
             tableOfHardConstraintsDone[whichConstraintsDone-1] = true;
 
-            Console.WriteLine("HC " + whichConstraintsDone + "Is Done");
+            Console.WriteLine("HC " + whichConstraintsDone + " Is Done");
             //Console.Read();
-
-
         }
 
+        public void HCNotDoneHandler(int whichConstraintsNotDone)
+        {
+            tableOfHardConstraintsDone[whichConstraintsNotDone - 1] = false;
+
+            Console.WriteLine("HC " + whichConstraintsNotDone + " Is Not Done");
+            //Console.Read();
+        }
+
+        /// <summary>
+        /// sprawdza ile HC jest spwłnionych w chromosomie
+        /// </summary>
+        /// <returns></returns>
         public int checkHowManyHCIsDone()
         {
             int counterOfHCDone = 0;

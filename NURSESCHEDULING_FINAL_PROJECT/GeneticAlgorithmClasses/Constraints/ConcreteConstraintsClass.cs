@@ -271,6 +271,13 @@ namespace NURSESCHEDULING_FINAL_PROJECT
 
             while ((checkedNurseFromPool = NurseNavigator.getNextNurseFromNursePool(obPoolOfNursesReference)) != null)//dla kazdej pielegniarki z pool
             {
+                if(NurseNavigator.IndexOfNextNurseFromPool == PoolOfNurses.SizeOfPool) // to tylko do debuggera do wykrycia błędu - jesli obecna pielegniarka ma index taki jak rozmiar Pool
+                {
+                    Console.WriteLine("Tu jest zwiecha");
+                }
+
+
+
                 while ((checkedNurseFromChromosome = NurseNavigator.getNextNurseFromChromosome(chromosomeVectorReference)) != null) // dla kazdej z chromosoma(z wszystkich zmian po kolei)
                 {
                     if (checkedNurseFromPool == checkedNurseFromChromosome)
@@ -311,7 +318,7 @@ namespace NURSESCHEDULING_FINAL_PROJECT
 
                 NurseNavigator.clearChromosomeStatements();
             }
-            return false; //jezeli program nie został przerwany w while to Constraint spełniony
+            return true; //jezeli program nie został przerwany w while to Constraint spełniony
         }
 
         public override bool HC8NightShiftMustBeFollowedByAtLeast14HoursOfRest() //to rowniez zawsze spełnione ponieważ w danym dniu można zacząc tylko jedną zmiane(HC1) - jesli zaczynam nocke to przeciez early,day,late mam wolne wczesniej

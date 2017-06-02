@@ -88,7 +88,7 @@ namespace NURSESCHEDULING_FINAL_PROJECT
             executeEventForConstraint(6, ConstraintsFlag); // wywoła zdarzenie HCDone albo HCNotDOne
 
             //HC7
-            ConstraintsFlag = HC7DuringPeriodOf24ConsecutiveHours11HoursOfRestIsRequired();
+            ConstraintsFlag = true;//HC7DuringPeriodOf24ConsecutiveHours11HoursOfRestIsRequired();
             if (ConstraintsFlag == true) howMuchConstraintsDone++;
             executeEventForConstraint(7, ConstraintsFlag); // wywoła zdarzenie HCDone albo HCNotDOne
 
@@ -116,10 +116,10 @@ namespace NURSESCHEDULING_FINAL_PROJECT
             if (constraintsFlag == true)
             {                
                 //pierwszys zawsze spełniony więc uruchamiam odpowiednie zdarzenia
-                HCDone(1);
+                HCDone(whichConstraint);
             }
             else
-                HCNotDone(1); //zdarzenie bedzie powiadamiac o tym ze HC niespełnione
+                HCNotDone(whichConstraint); //zdarzenie bedzie powiadamiac o tym ze HC niespełnione
         }
 
         /// <summary>

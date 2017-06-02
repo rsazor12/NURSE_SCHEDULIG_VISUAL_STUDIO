@@ -39,5 +39,15 @@ namespace NURSESCHEDULING_FINAL_PROJECT
         }
 
         internal KindOfJob KindOfJob1 { get => kindOfJob; set => kindOfJob = value; }
+
+        /// <summary>
+        /// Wyswietla ID pielegniarki
+        /// </summary>
+        /// <returns></returns>
+        //gdy przeciażymy tą metode to będzie ona fajnie wyświetlała pielgniarke w debugerze
+        public override string ToString()
+        {
+            return "ID : "+ID.ToString();
+        }
     }
 }
