@@ -344,14 +344,14 @@ namespace NURSESCHEDULING_FINAL_PROJECT
             while (counterOfMutationDone<howMuchMutationWillBeDone)//z kazdym obraotem zamiana zmian
             {
                 //zmiana 1
-                weekOfShift1 = rnd.Next(0, 4);
-                dayOfShift1 = rnd.Next(0, 6);
-                shiftOfShift1 = rnd.Next(0, 3);
+                weekOfShift1 = rnd.Next(0, 5);
+                dayOfShift1 = rnd.Next(0, 7);
+                shiftOfShift1 = rnd.Next(0, 4);
 
                 //zmiana2
-                weekOfShift2 = rnd.Next(0, 4);
-                dayOfShift2 = rnd.Next(0, 6);
-                shiftOfShift2 = rnd.Next(0, 3);
+                weekOfShift2 = rnd.Next(0, 5);
+                dayOfShift2 = rnd.Next(0, 7);
+                shiftOfShift2 = rnd.Next(0, 4);
 
                 //mamy 2 zmiany wiec je teraz zamieniamy ze soba 2 w miejsce 1 i 1 w miejsce 2
                 //najpierw 1 zmiana do schowka

@@ -12,9 +12,11 @@ namespace NURSESCHEDULING_FINAL_PROJECT
 		public  NurseClass[][][][] chromosomeVectorReference; //referencja do Chromosoma tylko do wektora nie całej klasy
         public PoolOfNurses obPoolOfNursesReference;
 
-        //zdarzenia które będą powiadamiać o spełnieniu odpowiednich Constraints
+        //zdarzenia które będą powiadamiać o spełnieniu odpowiednich Constraints i ich niespełnieniu
         public delegate void HC1Delegate(int whichConstraintDone);
-        public event HC1Delegate HCDone;       
+        public event HC1Delegate HCDone;
+
+        public event HC1Delegate HCNotDone;
 
         //I funkcje sprawdzające Hard Constraints
         //konwencja zapisu HC+numner+Opis (HC - Hard Constraints)
@@ -48,57 +50,76 @@ namespace NURSESCHEDULING_FINAL_PROJECT
 
 
         ///<summary> ///to jest opis co funkcja robi
-        ///zwraca liczbe spełnionych constainrs i uruchamia zdarzenia dla spełnienia odpowiedniego constraints
+        ///zwraca liczbe spełnionych constaints i uruchamia zdarzenia dla spełnienia i niespełnia odpowiednich constraints
         ///</summary>
         public virtual int checkHowMuchHardConstraintsIsDone()
         {
             int howMuchConstraintsDone = 0;
             bool ConstraintsFlag = true;   
 
+            //HC1
             ConstraintsFlag = HC1SchedulingPlanNeedsToBeFulfilled();
             if (ConstraintsFlag == true) howMuchConstraintsDone++;
-            //pierwszys zawsze spełniony więc uruchamiam odpowidnie zdarzenia
-            HCDone(1);
-           
+            executeEventForConstraint(1, ConstraintsFlag); // wywoła zdarzenie HCDone albo HCNotDOne
+               
+            //HC2        
             ConstraintsFlag = HC2EachDayOnlyOneShiftForNurse();
             if (ConstraintsFlag == true) howMuchConstraintsDone++;
-            //gdy drugi spełniony to zdarzenie wywoływane
-            HCDone(2);
+            executeEventForConstraint(2, ConstraintsFlag); // wywoła zdarzenie HCDone albo HCNotDOne
 
+            //HC3
             ConstraintsFlag = HC3EachNurseCanExceedFourHourDuringSchedulingPeriod();
             if (ConstraintsFlag == true) howMuchConstraintsDone++;
-            HCDone(3);
+            executeEventForConstraint(3, ConstraintsFlag); // wywoła zdarzenie HCDone albo HCNotDOne
 
+            //HC4
             ConstraintsFlag = HC4MaxThreeNightShiftForNurseDuringSchedulingPeriod();
             if (ConstraintsFlag == true) howMuchConstraintsDone++;
-            HCDone(4);
+            executeEventForConstraint(4, ConstraintsFlag); // wywoła zdarzenie HCDone albo HCNotDOne
 
+            //HC5
             ConstraintsFlag = HC5AtLeastTwoWeekendsOffDutyForNurseDuringSchedulingPeriod();
             if (ConstraintsFlag == true) howMuchConstraintsDone++;
-            HCDone(5);
+            executeEventForConstraint(5, ConstraintsFlag); // wywoła zdarzenie HCDone albo HCNotDOne
 
+            //HC6
             ConstraintsFlag = HC6AfterSeriesOfAtLeastTwoConsecutiveNights42HoursOfRestIsRequired();
             if (ConstraintsFlag == true) howMuchConstraintsDone++;
-            HCDone(6);
+            executeEventForConstraint(6, ConstraintsFlag); // wywoła zdarzenie HCDone albo HCNotDOne
 
+            //HC7
             ConstraintsFlag = HC7DuringPeriodOf24ConsecutiveHours11HoursOfRestIsRequired();
             if (ConstraintsFlag == true) howMuchConstraintsDone++;
-            HCDone(7);
+            executeEventForConstraint(7, ConstraintsFlag); // wywoła zdarzenie HCDone albo HCNotDOne
 
+            //HC8
             ConstraintsFlag = HC8NightShiftMustBeFollowedByAtLeast14HoursOfRest();
             if (ConstraintsFlag == true) howMuchConstraintsDone++;
-            HCDone(8);
+            executeEventForConstraint(8, ConstraintsFlag); // wywoła zdarzenie HCDone albo HCNotDOne
 
+            //HC9
             ConstraintsFlag = HC9NumberOfConsecutiveNightShiftsIsAtMost3();
             if (ConstraintsFlag == true) howMuchConstraintsDone++;
-            HCDone(9);
+            executeEventForConstraint(9, ConstraintsFlag); // wywoła zdarzenie HCDone albo HCNotDOne
 
+            //HC10
             ConstraintsFlag = HC10NumberOfConsecutiveShiftsIsAtMost6();
-            HCDone(10);
             if (ConstraintsFlag == true) howMuchConstraintsDone++;
-
+            executeEventForConstraint(10, ConstraintsFlag); // wywoła zdarzenie HCDone albo HCNotDOne
 
             return howMuchConstraintsDone;
+        }
+
+        private void executeEventForConstraint(int whichConstraint, bool constraintsFlag)
+        {
+          
+            if (constraintsFlag == true)
+            {                
+                //pierwszys zawsze spełniony więc uruchamiam odpowiednie zdarzenia
+                HCDone(1);
+            }
+            else
+                HCNotDone(1); //zdarzenie bedzie powiadamiac o tym ze HC niespełnione
         }
 
         /// <summary>
