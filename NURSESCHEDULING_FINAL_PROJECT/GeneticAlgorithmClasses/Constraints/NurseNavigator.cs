@@ -28,9 +28,13 @@ namespace NURSESCHEDULING_FINAL_PROJECT
         public static sbyte CurrentShift { get => currentShift; set => currentShift = value; }
         public static sbyte CurrentIndexOfNurseOnShift { get => currentIndexOfNurseOnShift; set => currentIndexOfNurseOnShift = value; }
         public static sbyte IndexOfNextNurseFromPool { get => indexOfNextNurseFromPool; set => indexOfNextNurseFromPool = value; }
+        public static sbyte IndexOfNurseFromSpecifiedShift { get => indexOfNurseFromSpecifiedShift; set => indexOfNurseFromSpecifiedShift = value; }
 
         //skladowe dla drugiej metody - pobieranie z pool
         static sbyte indexOfNextNurseFromPool = -1;
+
+        //skladowa do metody getNurseFromSpecifiedShift
+        static sbyte indexOfNurseFromSpecifiedShift = -1;
 
         /// <summary>
         /// Czysci wszytskie skladowe statyczne dla navigacji po Chromosomie: currentDay, CurrentWeek itd.
@@ -94,6 +98,22 @@ namespace NURSESCHEDULING_FINAL_PROJECT
             indexOfNextNurseFromPool++;
             if (indexOfNextNurseFromPool == PoolOfNurses.SizeOfPool) return null;
             return obPoolOfNurses.getNurseFromPoolFromTheIndex(indexOfNextNurseFromPool);
+        }
+
+        /// <summary>
+        /// pobiera pilegniarke z okreslonej zmiany , gdy skonczy zwraca null i sama resetuje index pobierania
+        /// </summary>
+        public static NurseClass getNextNurseFromSpecifiedShift(int week,int day,int shift, NurseClass[][][][] chromosomeVectorReference)
+        {
+            IndexOfNurseFromSpecifiedShift++; //zwieksz jej indeks
+            if (IndexOfNurseFromSpecifiedShift + 1 != chromosomeVectorReference[week][day][shift].Length)
+                return chromosomeVectorReference[week][day][shift][IndexOfNurseFromSpecifiedShift];
+            else
+            {
+                indexOfNurseFromSpecifiedShift = 0; //wezeruj index pobierania
+                return null;
+            }
+                
         }
 
         public static void setIntervalForReturnedNursesFromChromosome(sbyte fromWeekInterval,sbyte toWeekInterval, sbyte fromDayInterval, sbyte toDayInterval, sbyte fromShiftInterval, sbyte toShiftInterval)
