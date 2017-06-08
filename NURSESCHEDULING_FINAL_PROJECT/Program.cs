@@ -13,7 +13,7 @@ namespace NURSESCHEDULING_FINAL_PROJECT
     {
         static void Main(string[] args)
         {
-            //Console.SetBufferSize(200, 100);//komentarz
+            //Console.SetBufferSize(200, 100);
             ChromosomeClass obChromosomeClass = new ChromosomeClass();
             //obChromosomeClass.writeNursesFromChromosomeFromEachShift();
 
