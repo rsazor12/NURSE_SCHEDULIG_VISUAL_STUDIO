@@ -21,18 +21,23 @@ namespace NURSESCHEDULING_FINAL_PROJECT
         }
 
         //musze wziac kazda pielegniarke z dnia i sprawdzic czy pracuje one jeszcze w tym samym dniu
+        /// <summary>
+        /// zwraca false jesli pielegniarki powtarzaja sie w danym dniu
+        /// </summary>
+        /// <returns></returns>
         public override bool HC2EachDayOnlyOneShiftForNurse()
 		{
             NurseNavigator.clearChromosomeStatements(); //zeruje zeby pobierało od początku Chromosoma te pielegniarki
-			NurseClass checkedNurse= NurseNavigator.getNextNurseFromChromosome(chromosomeVectorReference);
+            NurseClass checkedNurse;  
 			
-            while(checkedNurse!=null)
+            while((checkedNurse = NurseNavigator.getNextNurseFromChromosome(chromosomeVectorReference))!=null)//poieram wszystkie z chromosoma
             {
+                //sprawdzam czy pielegniarka z chromosoma ma gdzies odpowiedniczke w tym samym dniu
                 if(CheckThatIsOnlyOneNurseOnDay(checkedNurse, NurseNavigator.CurrentWeek, NurseNavigator.CurrentDay)==false)//jesli zwroci false to pielegniarki sie powatrzaja w danym dniu wiec przerywam sprawdzanie
                 {
                     return false;
                 }
-                checkedNurse = NurseNavigator.getNextNurseFromChromosome(chromosomeVectorReference);
+               
             }             		
             return true;
 		}
@@ -53,7 +58,8 @@ namespace NURSESCHEDULING_FINAL_PROJECT
                         duplicateNursesCounter++;     
              }
 
-            if (duplicateNursesCounter > 1) return false;  //jesli wiecej niz jedna
+            if (duplicateNursesCounter > 1)
+                return false;  //jesli wiecej niz jedna
             return true;                                   //jesli jedna
         }
 
@@ -360,7 +366,7 @@ namespace NURSESCHEDULING_FINAL_PROJECT
             NurseNavigator.clearChromosomeStatements();
             NurseNavigator.clearPoolStatements();
 
-            int lastCheckedDay = NurseNavigator.CurrentDay;
+            int lastCheckedDay = -1;
 
 
             while ((checkedNurseFromPool = NurseNavigator.getNextNurseFromNursePool(obPoolOfNursesReference)) != null)//dla kazdej pielegniarki z pool
@@ -369,7 +375,7 @@ namespace NURSESCHEDULING_FINAL_PROJECT
                 {
                     if (checkedNurseFromPool == checkedNurseFromChromosome) //jeżeli to sprawdzana pielegniarka
                     {
-                        if (lastCheckedDay != NurseNavigator.CurrentDay && ((lastCheckedDay + 1) == NurseNavigator.CurrentDay))//jesli sprawdzanie odbywa sie już dla innego dnia i jest to kolejny dzien
+                        if ((lastCheckedDay + 1) == NurseNavigator.CurrentDay || (lastCheckedDay==6 && NurseNavigator.CurrentDay==0))//jesli sprawdzanie odbywa sie  dla innego dnia i jest to kolejny dzien
                         {
                             howManyTimesNurseOccureInConsecutiveDays++;  //podbijam wystąpienie pielegniarki w danym dniu
 
@@ -379,13 +385,12 @@ namespace NURSESCHEDULING_FINAL_PROJECT
                             howManyTimesNurseOccureInConsecutiveDays = 0;
 
                     }
-
                     lastCheckedDay = NurseNavigator.CurrentDay;
                 }
-
+                howManyTimesNurseOccureInConsecutiveDays = 0; //zeruje licznik dla nastepnej pielegniarki
                 NurseNavigator.clearChromosomeStatements();
             }
-            return false; //jezeli program nie został przerwany w while to Constraint spełniony
+            return true; //jezeli program nie został przerwany w while to Constraint spełniony
         }
 
 

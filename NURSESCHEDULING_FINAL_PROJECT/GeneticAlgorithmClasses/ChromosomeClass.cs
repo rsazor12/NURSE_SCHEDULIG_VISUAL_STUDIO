@@ -343,7 +343,7 @@ namespace NURSESCHEDULING_FINAL_PROJECT
             //gdzie chwilowo przechować jedną zmiane(te pare pielegniarek)
             NurseClass[] tempTableForNurses;
 
-            while (counterOfMutationDone<howMuchMutationWillBeDone)//z kazdym obraotem zamiana zmian
+            while (counterOfMutationDone < howMuchMutationWillBeDone)//z kazdym obraotem zamiana zmian  //counterOfMutationDone<howMuchMutationWillBeDone
             {
                 //najpierw losuje pierwsza zmiane1 do zamiany - odpowiednie indexy w chromosomie
                 weekOfShift1 = rnd.Next(0, 5);
@@ -381,6 +381,15 @@ namespace NURSESCHEDULING_FINAL_PROJECT
                 chromosomeVector[weekOfShift1][dayOfShift1][shiftOfShift1] = chromosomeVector[weekOfShift2][dayOfShift2][shiftOfShift2];
 
                 chromosomeVector[weekOfShift2][dayOfShift2][shiftOfShift2] = tempTableForNurses;
+
+               
+
+                /*//jesli po mutacji HC2 jest niespełnione to musimy cofnac zmiany i mutowac dalej
+                this.obConstraintsClass.chromosomeVectorReference = chromosomeVector;
+                if( this.obConstraintsClass.HC2EachDayOnlyOneShiftForNurse()) //jezeli HC2 spelniony po mutacji to akceptujemy zmiany
+                {
+                    break;  // jesli spelniony to przerywamy mutacje
+                }*/
 
                 counterOfMutationDone++;
             }
