@@ -161,27 +161,23 @@ namespace NURSESCHEDULING_FINAL_PROJECT
             NurseNavigator.clearChromosomeStatements();
             NurseNavigator.clearPoolStatements();
 
-
             while ((checkedNurseFromPool = NurseNavigator.getNextNurseFromNursePool(obPoolOfNursesReference)) != null)//dla kazdej pielegniarki z pool
             {
                 while ((checkedNurseFromChromosome = NurseNavigator.getNextNurseFromChromosome(chromosomeVectorReference)) != null) // dla kazdej z chromosoma
                 {
                     if (checkedNurseFromPool == checkedNurseFromChromosome)
-                    {
-                        if (ShiftNavigator.CurrentKindOfShift == ShiftNavigator.KindOfShift.night)
-                        {
-                            numberOfWeekendsOfCurrentNurseDuringSchedulingPeriod++;
+                    {                       
+                            numberOfWeekendsOfCurrentNurseDuringSchedulingPeriod++; //dana pielegniarka pracuje w ten weekend
 
-                            if (numberOfWeekendsOfCurrentNurseDuringSchedulingPeriod == 2) break;  //jesli 2 weekendy wolne to nie sprawdzaj dalej
-                        }
+                            //if (numberOfWeekendsOfCurrentNurseDuringSchedulingPeriod >= 3) break; //jesli pielegniarka pracuje wiecej niz 3 weekendy to nie jest mozliwe zeby miala 2 weekendy wolne
+                        
                     }
                 }
 
-                if (numberOfWeekendsOfCurrentNurseDuringSchedulingPeriod < 2) return false; //ta pielegniarka nie miała 2 weekendów wolnych więc cały constraints niespełniony
+                if (numberOfWeekendsOfCurrentNurseDuringSchedulingPeriod >= 3) return false; //ta pielegniarka nie miała 2 weekendów wolnych więc cały constraints niespełniony
 
                 numberOfWeekendsOfCurrentNurseDuringSchedulingPeriod = 0;  //dla nowej pielegniarki zerujemy licznik
                 NurseNavigator.clearChromosomeStatements();  //od nowa pobieranie z chromosoma
-
             }
 
            // NurseNavigator.clearPoolStatements();
@@ -195,6 +191,7 @@ namespace NURSESCHEDULING_FINAL_PROJECT
             int numberOfNotNightShiftAfterNightShift = 0; //jesli przynajmniej 8 to constraints spełniony
 
             int numberOfLastNightShift = 0;
+            int lastCheckedDay = 0;
             NurseClass checkedNurseFromPool;
             NurseClass checkedNurseFromChromosome;
 
@@ -202,33 +199,55 @@ namespace NURSESCHEDULING_FINAL_PROJECT
             NurseNavigator.clearChromosomeStatements();
             NurseNavigator.clearPoolStatements();
 
-
             while ((checkedNurseFromPool = NurseNavigator.getNextNurseFromNursePool(obPoolOfNursesReference)) != null)//dla kazdej pielegniarki z pool
             {
                 while ((checkedNurseFromChromosome = NurseNavigator.getNextNurseFromChromosome(chromosomeVectorReference)) != null) // dla kazdej z chromosoma
                 {
                     if (checkedNurseFromPool == checkedNurseFromChromosome)
                     {
-                        if (ShiftNavigator.CurrentKindOfShift == ShiftNavigator.KindOfShift.night)
+                        if (ShiftNavigator.CurrentKindOfShift == ShiftNavigator.KindOfShift.night) //jesli w chromosomie ta pielegniarka jest na nocce i jest to kolejna zmiana
                         {
-                            numberOfNightShiftsOfCurrentNurseDuringSchedulingPeriod++;
+                            
+                            if(NurseNavigator.CurrentDay==lastCheckedDay+1)//jesli te nocki dzien po dniu
+                                numberOfNightShiftsOfCurrentNurseDuringSchedulingPeriod++;
                         }
-                        else //jesli nie nocka i nocek wiecej niz 2 to zaczynam liczyc zmiany wolne od nocek
+                        else //jesli nie nocka i nocek wiecej niz 2 to sprawdzam czy w ciagu 2 najblizszych dni pielegniarka pracuje
                         {
-                            if (numberOfNightShiftsOfCurrentNurseDuringSchedulingPeriod > 2)
+                            if (numberOfNightShiftsOfCurrentNurseDuringSchedulingPeriod >= 2)
                             {
-                                //jezeli liczba nocek sie zmieni to zmienna przechowujaca zmiany wolne musi zostac wyzerowana
-                                if (numberOfLastNightShift == numberOfNightShiftsOfCurrentNurseDuringSchedulingPeriod)
+                                //musze przeleciec 8 nastepnych zmian w chromosomie i sprawdzic czy jest na nich ta pielegniarka
+                                //zapisuje obency stan chromosoma
+                                int savedWeek = NurseNavigator.CurrentWeek;
+                                int savedDay = NurseNavigator.CurrentDay;
+                                int currentShift = NurseNavigator.CurrentShift;
+
+
+                                //sprawdzam 8 nastepnych zmian jesli tu jest to constraint niespelniony (8 zmian to)
+                                int lastCheckedShift = -1;
+                                for(int i=0;i<8;i++)
                                 {
-                                    numberOfNotNightShiftAfterNightShift++;
+                                    //pobieraj ze zmiany dopoki nie zmieni sie zmiana (czasem sa 2 pilegniarki na zmianie czasem 3 - while jest  konieczny zeby zachowac plastycznosc kodu)
+                                    while(NurseNavigator.CurrentShift == lastCheckedShift +1)
+                                    {
+                                        checkedNurseFromChromosome = NurseNavigator.getNextNurseFromChromosome(chromosomeVectorReference);
+                                        if (checkedNurseFromPool == checkedNurseFromChromosome)
+                                        {
+
+                                        }
+
+                                        NurseNavigator.
+                                    }
+
+                                    lastCheckedShift++;
+                                    if (lastCheckedShift == 3) lastCheckedShift = 0;
+                                   
                                 }
-                                else
-                                    numberOfNotNightShiftAfterNightShift = 0; //zeruje liczbe zmian wolnych bo mamy następną nocke
                                
-                                numberOfLastNightShift = numberOfNightShiftsOfCurrentNurseDuringSchedulingPeriod; //to do kontroli czy liczba nocek sie zmieniła
                             }
                            
                         }
+
+                        lastCheckedDay = NurseNavigator.CurrentDay;
                     }
                     
                 }
@@ -239,6 +258,7 @@ namespace NURSESCHEDULING_FINAL_PROJECT
                 numberOfNotNightShiftAfterNightShift = 0;
                 numberOfLastNightShift = 0;
                 numberOfNightShiftsOfCurrentNurseDuringSchedulingPeriod = 0;
+                lastCheckedDay = 0;
                 NurseNavigator.clearChromosomeStatements();
                // NurseNavigator.clearPoolStatements();
             }
