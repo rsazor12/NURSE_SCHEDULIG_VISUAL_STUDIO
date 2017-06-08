@@ -382,14 +382,38 @@ namespace NURSESCHEDULING_FINAL_PROJECT
 
                 chromosomeVector[weekOfShift2][dayOfShift2][shiftOfShift2] = tempTableForNurses;
 
-               
+                //dokonalismy zamiany - teraz patrze czy w wylosowanych dniach pielegniarki sie powtarzaja - HC2
+                //jesli tak to cofamy zamiane
 
-                /*//jesli po mutacji HC2 jest niespełnione to musimy cofnac zmiany i mutowac dalej
-                this.obConstraintsClass.chromosomeVectorReference = chromosomeVector;
-                if( this.obConstraintsClass.HC2EachDayOnlyOneShiftForNurse()) //jezeli HC2 spelniony po mutacji to akceptujemy zmiany
+                //najpierw dzien ze zmiany 1
+
+                //sprawdzam czy pierwsza pielegniarka z danej zmiany powtarza sie na ktorejs zmiani (pielegniarki sa mutowane grupowa 3 na 3 , 2 na 2 , 1 na 1)
+                int numberOfDuplicates = 0;
+                for (int checkedShift=0;checkedShift<4;checkedShift++)
                 {
-                    break;  // jesli spelniony to przerywamy mutacje
-                }*/
+                    if (chromosomeVector[weekOfShift1][dayOfShift1][shiftOfShift1][0].ID == chromosomeVector[weekOfShift1][dayOfShift1][checkedShift][0].ID)//porownuje wstawiana zmiane ze zmiana 0,1,2,3
+                        numberOfDuplicates++;
+                }
+
+                if(numberOfDuplicates>2) // to znaczy ze mamy jedna pielegniarke w danym dniu pare razy 
+                {
+                   
+                   //wiec musimy cofnac ta iteracje mutacji
+                    tempTableForNurses = chromosomeVector[weekOfShift1][dayOfShift1][shiftOfShift1];
+
+                    chromosomeVector[weekOfShift1][dayOfShift1][shiftOfShift1] = chromosomeVector[weekOfShift2][dayOfShift2][shiftOfShift2];
+
+                    chromosomeVector[weekOfShift2][dayOfShift2][shiftOfShift2] = tempTableForNurses;
+
+                    obConstraintsClass.chromosomeVectorReference = chromosomeVector;
+                    if (obConstraintsClass.HC2EachDayOnlyOneShiftForNurse()) // tu test czy sie udało cofnac
+                    {
+                        Console.WriteLine("Udalo sie cofnac zmiany");
+                        Console.ReadKey();
+                    }
+                }
+
+       
 
                 counterOfMutationDone++;
             }
