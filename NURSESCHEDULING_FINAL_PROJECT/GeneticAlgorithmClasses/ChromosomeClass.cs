@@ -13,7 +13,7 @@ namespace NURSESCHEDULING_FINAL_PROJECT
         //składowe pomocnicze
         public PoolOfNurses obPoolOfNurses;
         //do Algorytmu genetycznego
-        public NurseClass[][][][] chromosomeVector = new NurseClass[5][][][]; //to jest poszarpana tablica (jagged) bo mamy różne ilości pielegniarke na różne zmiany
+        public NurseClass[][][][] chromosomeVector = new NurseClass[6][][][]; //to jest poszarpana tablica (jagged) bo mamy różne ilości pielegniarke na różne zmiany
         public AbstractConstraintsClass obConstraintsClass = new ConcreteConstraintsClass();
         int penaltyOfChromosome;
         int howManyHCDoneCounter;
@@ -35,7 +35,7 @@ namespace NURSESCHEDULING_FINAL_PROJECT
 
 
             //tworze wektor
-            for (int week = 0; week < 5; week++)
+            for (int week = 0; week < 6; week++)
             {
                 chromosomeVector[week] = new NurseClass[7][][]; //tworze tablice na tygodnie
                 for (int day = 0; day < 7; day++)
@@ -67,7 +67,7 @@ namespace NURSESCHEDULING_FINAL_PROJECT
 
         private void init(string randomOrOrdered) //tu poprostu inicjuje stworzony wczesniej wektor na pielegniarki
         {
-            for(int week=0;week<5;week++)
+            for(int week=0;week<6;week++)
             {
                 for(int day=0;day<7;day++)
                 {
@@ -349,7 +349,7 @@ namespace NURSESCHEDULING_FINAL_PROJECT
             while (counterOfMutationDone < howMuchMutationWillBeDone)//z kazdym obraotem zamiana zmian  //counterOfMutationDone<howMuchMutationWillBeDone
             {
                 //najpierw losuje pierwsza zmiane1 do zamiany - odpowiednie indexy w chromosomie
-                weekOfShift1 = rnd.Next(0, 5);
+                weekOfShift1 = rnd.Next(1, 6);
                 dayOfShift1 = rnd.Next(0, 7);
                 shiftOfShift1 = rnd.Next(0, 4);
 
@@ -358,20 +358,20 @@ namespace NURSESCHEDULING_FINAL_PROJECT
                 {
                     if(dayOfShift1>=0 && dayOfShift1<=4)//jesli dni od pon do piatku
                     {
-                        weekOfShift2 = rnd.Next(0, 5); //przedział week sie nie zmiania
+                        weekOfShift2 = rnd.Next(1, 6); //przedział week sie nie zmiania
                         dayOfShift2 = rnd.Next(0, 5);  //przedział day to od pon do piatku
                         shiftOfShift2 = rnd.Next(0, 3); //losuje tylko e,d,l
                     }
                     else //jesli dni od sooty do niedzieli
                     {
-                        weekOfShift2 = rnd.Next(0, 5); //przedział week sie nie zmiania
+                        weekOfShift2 = rnd.Next(1, 6); //przedział week sie nie zmiania
                         dayOfShift2 = rnd.Next(5, 7);  //przedział day to od soboty do niedzieli
                         shiftOfShift2 = rnd.Next(0, 3); //losuje tylko e,d,l
                     }
                 }
                 else //jesli wylosowalismy zmiane night to wybieramy inna zmiane night do zamiany
                 {
-                    weekOfShift2 = rnd.Next(0, 5); //przedział week sie nie zmiania
+                    weekOfShift2 = rnd.Next(1, 6); //przedział week sie nie zmiania
                     dayOfShift2 = rnd.Next(0, 7);  //day jest dowolny
                     shiftOfShift2 = 3; //zmiana musi byc night
                 }
@@ -379,6 +379,7 @@ namespace NURSESCHEDULING_FINAL_PROJECT
 
                 //mamy 2 zmiany wiec je teraz zamieniamy ze soba 2 w miejsce 1 i 1 w miejsce 2
                 //najpierw 1 zmiana do schowka
+
                 tempTableForNurses = chromosomeVector[weekOfShift1][dayOfShift1][shiftOfShift1];
 
                 chromosomeVector[weekOfShift1][dayOfShift1][shiftOfShift1] = chromosomeVector[weekOfShift2][dayOfShift2][shiftOfShift2];
