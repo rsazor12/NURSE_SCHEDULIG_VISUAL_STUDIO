@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace NURSESCHEDULING_FINAL_PROJECT
 {
-    class PoolOfNurses
+    public class PoolOfNurses
     {
         List<NurseClass> listOfNurses;  // dodaje pielegnirki do listy
         private static int sizeOfPool = 16;       //ta wartosc bedzie odczytywana pozniej z bazy 

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace NURSESCHEDULING_FINAL_PROJECT
 {
-    class ConcreteConstraintsClass : AbstractConstraintsClass
+    public class ConcreteConstraintsClass : AbstractConstraintsClass
     {
 
        
@@ -610,7 +610,7 @@ namespace NURSESCHEDULING_FINAL_PROJECT
 
         public override int SC13NightShiftAfterEarlyShiftShouldBeAvoided()
         {
-            // A night shift after an early shift should be avoided.
+            /*// A night shift after an early shift should be avoided.
             // Nocna zmiana po zmianie early powinna być unikana. Pentaly = 1;
             // Sprawdzam każdego dnia dla każdej pielęgniarki ze zmiany early czy występuje w nocnej zmianie. Tego samego dnia?- Tak zakładam.
             // Jeśli tak to zwracam penaly. Jeżeli taka sytuacja nie zachodzi zwracam 0.
@@ -630,7 +630,7 @@ namespace NURSESCHEDULING_FINAL_PROJECT
 
             if (pentaly > 0)
                 return pentaly;
-            else
+            else*/
                 return 0;
 
 

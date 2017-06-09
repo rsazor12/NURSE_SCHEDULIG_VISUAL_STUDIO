@@ -7,7 +7,7 @@ using NURSESCHEDULING_FINAL_PROJECT;
 
 namespace NURSESCHEDULING_FINAL_PROJECT
 {
-    abstract class AbstractConstraintsClass
+    public abstract class AbstractConstraintsClass
     {
 		public  NurseClass[][][][] chromosomeVectorReference; //referencja do Chromosoma tylko do wektora nie całej klasy
         public PoolOfNurses obPoolOfNursesReference;

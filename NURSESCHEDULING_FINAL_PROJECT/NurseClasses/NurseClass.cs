@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace NURSESCHEDULING_FINAL_PROJECT
 {
-    class NurseClass
+    public class NurseClass
     {
         public enum KindOfJob
         {

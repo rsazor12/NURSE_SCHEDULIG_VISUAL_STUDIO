@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace NURSESCHEDULING_FINAL_PROJECT
 {
-     class GeneticAlgorithmClass
+    public class GeneticAlgorithmClass
     {
         protected List<ChromosomeClass> listOfParentChromosomes;
         protected int[] tableOfPenaltyForSpecifiedChromosome;
@@ -18,8 +18,15 @@ namespace NURSESCHEDULING_FINAL_PROJECT
         protected int maximumNumberOfGenerations;
         protected int minimumNumberOfGenerations;
         protected int howMuchMutationPerGeneration;
+        public int[] tableOfNurseID;
+        private int v1;
+        private int v2;
+        private int v3;
+        private int v4;
+        private int v5;
+        private int v6;
 
-        public GeneticAlgorithmClass(sbyte howMuchChromosomesCreate,int acceptablePenalty,int minimumNumberOfGenerations ,int maximumNumberOfGenerations,int howMuchMutationPerGeneration,int howMuchChromosomesSelectToCrossover)
+        public GeneticAlgorithmClass(sbyte howMuchChromosomesCreate,int acceptablePenalty,int minimumNumberOfGenerations ,int maximumNumberOfGenerations,int howMuchMutationPerGeneration,int howMuchChromosomesSelectToCrossover,int[] tableOFNurseID)
         {
             listOfParentChromosomes = new List<ChromosomeClass>();
             this.howMuchChromosomesCreate = howMuchChromosomesCreate;
@@ -28,17 +35,30 @@ namespace NURSESCHEDULING_FINAL_PROJECT
             this.maximumNumberOfGenerations = maximumNumberOfGenerations;
             this.howMuchMutationPerGeneration = howMuchMutationPerGeneration;
             this.howMuchChromosomesSelectToCrossover = howMuchChromosomesSelectToCrossover;
-            
+
+
+            //do wczytywania z pliku
+            this.tableOfNurseID = tableOFNurseID;
 
 
             //najpierw musze stworzyć liste chromosomów
             for(int i=0;i<howMuchChromosomesCreate;i++)
             {
-                listOfParentChromosomes.Add(new ChromosomeClass()); //tworze chromosom i dodaje go do listy
+                listOfParentChromosomes.Add(new ChromosomeClass(tableOFNurseID)); //tworze chromosom i dodaje go do listy
                 //PoolOfNurses.clearStaticCounter();
                 
             }
             tableOfPenaltyForSpecifiedChromosome = new int[listOfParentChromosomes.Count]; // inicjuje tez odpowiednio tablice na kare(penalty)
+        }
+
+        public GeneticAlgorithmClass(int v1, int v2, int v3, int v4, int v5, int v6)
+        {
+            this.v1 = v1;
+            this.v2 = v2;
+            this.v3 = v3;
+            this.v4 = v4;
+            this.v5 = v5;
+            this.v6 = v6;
         }
 
         ///<summary> 
@@ -108,7 +128,7 @@ namespace NURSESCHEDULING_FINAL_PROJECT
         {
             int whichWeekChange = fromWhichWeekStartCrossover;
             NurseClass[][][] tempTableOnWeek; //to jakby wskaźnik na tablice 3 wymiarową
-            ChromosomeClass[] newChromosomes = new ChromosomeClass[2] {new ChromosomeClass(), new ChromosomeClass() }; // miejsce na 2 nowe chromosomy
+            ChromosomeClass[] newChromosomes = new ChromosomeClass[2] {new ChromosomeClass(tableOfNurseID), new ChromosomeClass(tableOfNurseID) }; // miejsce na 2 nowe chromosomy
             //krzyżuje 2 chromosomy wymieniając między nimi tygodnie
 
             //najpierw przypisuje do nowych chromosomów stare chromosomy ( bo jak bd puste to co bd Krzyżować ? xd)

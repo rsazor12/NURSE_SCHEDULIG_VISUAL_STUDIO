@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Runtime.InteropServices;
+using Microsoft.Office.Interop.Excel;
 
 namespace NURSESCHEDULING_FINAL_PROJECT
 {
-    class ChromosomeClass
+    public class ChromosomeClass
     {
         //składowe pomocnicze
         public PoolOfNurses obPoolOfNurses;
@@ -22,7 +24,7 @@ namespace NURSESCHEDULING_FINAL_PROJECT
         ///zwraca ile HC jest spełnionych ale najpierw wylicza tą wartosc 
         public int HowManyHCDoneCounter { get => checkHowManyHCIsDone(); set => howManyHCDoneCounter = value; }
 
-        public ChromosomeClass()
+        public ChromosomeClass(int[] firstWeek)
         {
             //przypisanie zdarzen obsługujących wystapienie HardConstraints
             obConstraintsClass.HCDone += HCDoneHandler;
@@ -60,6 +62,7 @@ namespace NURSESCHEDULING_FINAL_PROJECT
             obPoolOfNurses = new PoolOfNurses();
 
             init("ordered"); // wypelniam wektor losowymi wartosciami("random") lub uporzadkowanymi ("ordered")
+            initFirstWeek(firstWeek);
         }
 
         private void init(string randomOrOrdered) //tu poprostu inicjuje stworzony wczesniej wektor na pielegniarki
@@ -382,41 +385,61 @@ namespace NURSESCHEDULING_FINAL_PROJECT
 
                 chromosomeVector[weekOfShift2][dayOfShift2][shiftOfShift2] = tempTableForNurses;
 
-                //dokonalismy zamiany - teraz patrze czy w wylosowanych dniach pielegniarki sie powtarzaja - HC2
-                //jesli tak to cofamy zamiane
-
-                //najpierw dzien ze zmiany 1
-
-                //sprawdzam czy pierwsza pielegniarka z danej zmiany powtarza sie na ktorejs zmiani (pielegniarki sa mutowane grupowa 3 na 3 , 2 na 2 , 1 na 1)
-                int numberOfDuplicates = 0;
-                for (int checkedShift=0;checkedShift<4;checkedShift++)
+               
+                for(int checkedNurse=0;checkedNurse< chromosomeVector[weekOfShift1][dayOfShift1][shiftOfShift1].Length;checkedNurse++) // dla dwóch zmian ta petla ma tyle samo obrotow dlatego jest tylko jedna
                 {
-                    if (chromosomeVector[weekOfShift1][dayOfShift1][shiftOfShift1][0].ID == chromosomeVector[weekOfShift1][dayOfShift1][checkedShift][0].ID)//porownuje wstawiana zmiane ze zmiana 0,1,2,3
-                        numberOfDuplicates++;
-                }
-
-                if(numberOfDuplicates>2) // to znaczy ze mamy jedna pielegniarke w danym dniu pare razy 
-                {
-                   
-                   //wiec musimy cofnac ta iteracje mutacji
-                    tempTableForNurses = chromosomeVector[weekOfShift1][dayOfShift1][shiftOfShift1];
-
-                    chromosomeVector[weekOfShift1][dayOfShift1][shiftOfShift1] = chromosomeVector[weekOfShift2][dayOfShift2][shiftOfShift2];
-
-                    chromosomeVector[weekOfShift2][dayOfShift2][shiftOfShift2] = tempTableForNurses;
-
-                    obConstraintsClass.chromosomeVectorReference = chromosomeVector;
-                    if (obConstraintsClass.HC2EachDayOnlyOneShiftForNurse()) // tu test czy sie udało cofnac
+                    //jesli sie powtarza w danym dniu to cofam zmiany
+                    if (
+                        checkThatNurseIsWorkingInSpecificDayMoreThanOnce(chromosomeVector[weekOfShift1][dayOfShift1][shiftOfShift1][checkedNurse],weekOfShift1,dayOfShift1)
+                        ||
+                        checkThatNurseIsWorkingInSpecificDayMoreThanOnce(chromosomeVector[weekOfShift2][dayOfShift2][shiftOfShift2][checkedNurse], weekOfShift2, dayOfShift2)
+                        )
                     {
-                        Console.WriteLine("Udalo sie cofnac zmiany");
-                        Console.ReadKey();
+                        //cofamy zmiany jesli mutacja zaszkodziła HC2
+                        tempTableForNurses = chromosomeVector[weekOfShift1][dayOfShift1][shiftOfShift1];
+
+                        chromosomeVector[weekOfShift1][dayOfShift1][shiftOfShift1] = chromosomeVector[weekOfShift2][dayOfShift2][shiftOfShift2];
+
+                        chromosomeVector[weekOfShift2][dayOfShift2][shiftOfShift2] = tempTableForNurses;
+
+                        obConstraintsClass.chromosomeVectorReference = chromosomeVector;
+                        /*if (obConstraintsClass.HC2EachDayOnlyOneShiftForNurse()) // tu test czy sie udało cofnac
+                        {
+                            Console.WriteLine("Udalo sie cofnac zmiany");
+                           // Console.ReadKey();
+                        }*/
                     }
                 }
+               
 
-       
 
-                counterOfMutationDone++;
+
+                    counterOfMutationDone++;
             }
+        }
+
+        /// <summary>
+        /// zwraca true jesli dana pielegniarka pracuje w ciagu dnia pare razy
+        /// </summary>
+
+        public bool checkThatNurseIsWorkingInSpecificDayMoreThanOnce(NurseClass checkedNurse, int checkedWeek, int checkedDay)
+        {
+          
+                //tu musze sprawdzic czy jest tylko jedna w danym dniu
+                int duplicateNursesCounter = 0; //pielegniarki ktore sie powatrzaja
+
+                //wybieram wszystkie pielegnairki z danego dnia i sprawdzam z podana w paramatrze
+
+                for (sbyte shift = 0; shift < 4; shift++)
+                {
+                    for (int nurse = 0; nurse < chromosomeVector[checkedWeek][checkedDay][shift].Length; nurse++)
+                        if (chromosomeVector[checkedWeek][checkedDay][shift][nurse].ID == checkedNurse.ID)
+                            duplicateNursesCounter++;
+                }
+
+                if (duplicateNursesCounter > 1)
+                    return true;  //jesli wiecej niz jedna
+                return false;                                   //jesli jedna            
         }
 
         //Obsługa zdarzeń (odpowiednie inkrementowanie zmiennej LevelOfHardConstraintsExecuted) - jesli 1 spelnione to 1 HC spełniony   
@@ -451,6 +474,103 @@ namespace NURSESCHEDULING_FINAL_PROJECT
 
             return howManyHCDoneCounter = counterOfHCDone;  //uzupełnij pole w klasie i zwróc wartosc
         }
+
+
+        public void initFirstWeek(int[] firstWeek)
+        {
+            // 1 - early
+            // 2 - day
+            // 3 - late
+            // 4 - night
+            int day = 0, shiftInFile = 1, index_nurse_in_shift = 0;
+            PoolOfNurses.clearStaticCounter();
+            for (day = 0; day < 7; day++)
+            {
+                for (int shift = 0; shift <= 3; shift++)
+                {
+                    for (int p = 0; p < 16; p++)
+                    {
+
+                        shiftInFile = firstWeek[day + p * 7] - 1;
+                        if (shiftInFile == shift)
+                            chromosomeVector[0][day][shiftInFile][index_nurse_in_shift++] =
+                                   obPoolOfNurses.getNurseFromPoolByOrder();
+                        else
+                            obPoolOfNurses.getNurseFromPoolByOrder();
+                    }
+                    PoolOfNurses.clearStaticCounter();
+                    index_nurse_in_shift = 0;
+
+                }
+
+            }
+        }
+
+        public void exportChromosomeToExcel()
+        {
+            Microsoft.Office.Interop.Excel.Application xla = new Microsoft.Office.Interop.Excel.Application();
+            Workbook wb = xla.Workbooks.Add(XlSheetType.xlWorksheet);
+            Worksheet ws = (Worksheet)xla.ActiveSheet;
+            xla.Visible = true;
+            String weekOfShift = " ";
+
+            int line = 1;
+
+            for (sbyte idNurse = 1; idNurse <= 16; idNurse++)
+            {
+
+                ws.Cells[line, 4].EntireRow.Font.Bold = true;
+
+                ws.Cells[line, 4] = "Nurse" + (idNurse).ToString();
+                for (int i = 1; i <= 7; ws.Cells[line, i].Interior.Color = 0x40e0d000, i++) ;
+                line++;
+
+                for (int week = 0; week < 5; week++)
+                {
+                    ws.Cells[line, week + 1].EntireRow.Font.Bold = true;
+                    ws.Cells[line, week + 1] = "Tydzien " + (week + 1).ToString();
+                    for (int i = 1; i <= 7; ws.Cells[line, i].Interior.Color = 0xb0b0b000, i++) ;
+                    line++;
+                    for (int write_day = 0; write_day < 7; write_day++)
+                        switch (write_day)
+                        {
+                            case 0: ws.Cells[line, write_day + 1] = "Mon"; break;
+                            case 1: ws.Cells[line, write_day + 1] = "Tues"; break;
+                            case 2: ws.Cells[line, write_day + 1] = "Wend"; break;
+                            case 3: ws.Cells[line, write_day + 1] = "Thurs"; break;
+                            case 4: ws.Cells[line, write_day + 1] = "Friday"; break;
+                            case 5: ws.Cells[line, write_day + 1] = "Sata"; break;
+                            case 6: ws.Cells[line, write_day + 1] = "Sund"; break;
+                        }
+                    line++;
+
+
+                    for (int day = 0; day < 7; day++)
+                    {
+                        for (int shift = 0; shift < 4; shift++)
+                        {
+                            for (int shiftNurse = 0; shiftNurse < chromosomeVector[week][day][shift].Length; shiftNurse++)
+                            {
+                                //       for(sbyte idNurse=0;idNurse <16; idNurse++)
+                                if (chromosomeVector[week][day][shift][shiftNurse].ID == idNurse)
+                                {
+                                    ws.Cells[line, day + 1] = "N";
+                                    switch (shift)
+                                    {
+                                        case 0: ws.Cells[line, day + 1] = "E"; break;
+                                        case 1: ws.Cells[line, day + 1] = "D"; break;
+                                        case 2: ws.Cells[line, day + 1] = "L"; break;
+                                        case 3: ws.Cells[line, day + 1] = "N"; break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    line++;
+                }
+            }
+        }
+
 
     }
 }
