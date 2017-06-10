@@ -528,7 +528,7 @@ namespace NURSESCHEDULING_FINAL_PROJECT
 
                 for (int week = 0; week < 5; week++)
                 {
-                    ws.Cells[line, week + 1].EntireRow.Font.Bold = true;
+                   ws.Cells[line, week + 1].EntireRow.Font.Bold = true;
                     ws.Cells[line, week + 1] = "Tydzien " + (week + 1).ToString();
                     for (int i = 1; i <= 7; ws.Cells[line, i].Interior.Color = 0xb0b0b000, i++) ;
                     line++;

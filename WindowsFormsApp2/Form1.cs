@@ -14,6 +14,7 @@ namespace WindowsFormsApp2
 {
     public partial class Form1 : Form
     {
+        bool buttonDown = false;
         public Form1()
         {
             InitializeComponent();
@@ -21,7 +22,7 @@ namespace WindowsFormsApp2
 
         private void button1_Click(object sender, EventArgs e)
         {
-            
+            buttonDown = true;
 
             startProgram();
         }
@@ -37,25 +38,22 @@ namespace WindowsFormsApp2
             openFileDialog1.Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*";
             openFileDialog1.FilterIndex = 2;
             openFileDialog1.RestoreDirectory = true;
-
+            String line = "text" ;
             if (openFileDialog1.ShowDialog() == DialogResult.OK)
             {
-                try
+                
                 {
                     using (StreamReader sr = new StreamReader(openFileDialog1.OpenFile()))
                     {
                         // Read the stream to a string, and write the string to the console.
-                        String line = sr.ReadToEnd();
-                        textBox1.Text = line;
+                        line = sr.ReadToEnd();
+                       // textBox1.Text = line;
                     }
 
                 }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Error: Could not read file from disk. Original error: " + ex.Message);
-                }
+               
             }
-            int[] firstWeekArr = textBox1.Text.Split(new char[] { ' ', '\n' }, StringSplitOptions.RemoveEmptyEntries).
+            int[] firstWeekArr = line.Split(new char[] { ' ', '\n' }, StringSplitOptions.RemoveEmptyEntries).
             Where(x => !string.IsNullOrWhiteSpace(x)).
             Select(x => int.Parse(x)).ToArray();
 
@@ -64,10 +62,11 @@ namespace WindowsFormsApp2
         }
 
 
-        public void startProgram()
+        public  void startProgram()
         {
             //NURSESCHEDULING_FINAL_PROJECT.Program.Main(getFirstWeekArray());
 
+          
 
 
             //Console.SetBufferSize(200, 100);
@@ -90,5 +89,29 @@ namespace WindowsFormsApp2
 
 
         }
+
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            
+
+        }
+
+
+        public async void refreshStatusBar()
+        {
+            int lastGeneration = -1;
+
+            if (buttonDown == true)
+            {
+                if (GeneticAlgorithmClass.counterOfGenerations != lastGeneration)
+                {
+                    lastGeneration = GeneticAlgorithmClass.counterOfGenerations;
+                    
+                }
+
+            }
+        }
     }
+
+
 }

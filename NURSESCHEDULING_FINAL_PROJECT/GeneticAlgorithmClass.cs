@@ -8,6 +8,8 @@ namespace NURSESCHEDULING_FINAL_PROJECT
 {
     public class GeneticAlgorithmClass
     {
+        public static int counterOfGenerations = 0;
+
         protected List<ChromosomeClass> listOfParentChromosomes;
         protected int[] tableOfPenaltyForSpecifiedChromosome;
 
@@ -164,7 +166,7 @@ namespace NURSESCHEDULING_FINAL_PROJECT
             //1 - wybieram osobniki(chromosomy) z najlepszym przystosowaniem - najmniejszym penalty
             // musze znalezc te chromosomy ktore będą mieć najmniejsza wartość w tableOfPenalty
             //dodaje je do listy wybranych dopóki lista nie będzie miała długości określonej przez użytkownika
-            int counterOfGenerations = 0;
+           
 
             while(counterOfGenerations<maximumNumberOfGenerations)//counterOfGenerations<maximumNumberOfGenerations
             {
